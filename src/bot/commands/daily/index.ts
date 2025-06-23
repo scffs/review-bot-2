@@ -1,0 +1,1 @@
+export { registerDaily } from './register'

@@ -1,0 +1,47 @@
+services:
+  app:
+    # Сборка контейнера из текущей директории с использованием указанного Dockerfile
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    # Перезапуск контейнера, если он остановлен не вручную (например, при сбое)
+    restart: unless-stopped
+
+    # Подключение переменных окружения из файла .env
+    env_file:
+      - .env
+
+    # Монтирование текущей директории в контейнер как /app (для live-редактирования)
+    volumes:
+      - .:/app
+
+    # Рабочая директория внутри контейнера
+    working_dir: /app
+
+    # Контейнер зависит от postgres — он будет запущен до app
+    depends_on:
+      - postgres
+
+  postgres:
+    # Использование официального образа PostgreSQL версии 14
+    image: postgres:14
+
+    # Перезапуск контейнера, если он остановлен не вручную
+    restart: unless-stopped
+
+    # Загрузка переменных окружения (например, PG_PASSWORD) из файла .env
+    env_file:
+      - .env
+
+    # Проброс порта PostgreSQL наружу (хост:контейнер)
+    ports:
+      - "5432:5432"
+
+    # Монтирование volume для хранения данных PostgreSQL между перезапусками
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+# Объявление volume для постоянного хранения данных PostgreSQL
+volumes:
+  postgres_data:

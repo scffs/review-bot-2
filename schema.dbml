@@ -1,0 +1,204 @@
+enum role {
+  admin
+  user
+  manager
+}
+
+enum tag_type {
+  Fullstack
+  DevOps
+  Backend
+  Frontend
+  Pixi
+  Docs
+  Emergency
+  WithoutTesting
+  WithoutMediaTesting
+  TLReview
+  Bug
+}
+
+enum vacancy {
+  Frontend
+  Backend
+  DevOps
+  "Project Manager"
+  Pixi
+  Fullstack
+  Docs
+  "Technical Director"
+}
+
+table assignees {
+  id serial [pk, not null, increment]
+  task_id integer [not null]
+  user_id integer [not null]
+
+  indexes {
+    
+    
+    (task_id, user_id) [name: 'assignees_task_id_user_id_unique', unique]
+  }
+}
+
+table attachments {
+  id serial [pk, not null, increment]
+  original_url varchar(255) [not null]
+  type varchar [not null]
+  local_path text [not null]
+  task_id integer [not null]
+
+  indexes {
+    
+    local_path [name: 'attachments_local_path_unique', unique]
+  }
+}
+
+table mr_commented_users {
+  id serial [pk, not null, increment]
+  mr_review_id integer [not null]
+  user_id integer [not null]
+}
+
+table mr_comments {
+  id serial [pk, not null, increment]
+  comment_id integer [not null]
+  comment_link varchar(255) [not null]
+  assigned_user_id integer [not null]
+  mr_review_id integer [not null]
+}
+
+table mr_reviewers {
+  id serial [pk, not null, increment]
+  is_approved boolean [not null, default: false]
+  mr_review_id integer [not null]
+  user_id integer [not null]
+}
+
+table mr_reviews {
+  id serial [pk, not null, increment]
+  total_comments smallint [not null, default: 0]
+  unresolved_comments smallint [not null, default: 0]
+  total_reviewers smallint [not null, default: 0]
+  branch_behind_by smallint [not null, default: 0]
+  has_conflicts boolean [not null, default: false]
+  changed_files_count smallint [not null, default: 0]
+  additions integer [not null, default: 0]
+  deletions integer [not null, default: 0]
+  duration_seconds integer [not null, default: 0]
+  task_id integer [not null]
+}
+
+table review_stats {
+  id serial [pk, not null, increment]
+  mr_review_id integer [not null]
+  user_id integer [not null]
+  comments_count integer [not null, default: 0]
+  created_at timestamp [not null, default: `now()`]
+
+  indexes {
+    
+    
+    (mr_review_id, user_id) [name: 'review_stats_mr_review_id_user_id_unique', unique]
+  }
+}
+
+table tags {
+  id serial [pk, not null, increment]
+  type tag_type [not null]
+  weeek_id integer
+
+  indexes {
+    type [name: 'tags_type_unique', unique]
+    (type, weeek_id) [name: 'tags_weeek_id_type_unique', unique]
+    weeek_id [name: 'tags_weeek_id_unique', unique]
+  }
+}
+
+table task_messages {
+  id serial [pk, not null, increment]
+  message_id integer [not null]
+  type varchar [not null]
+  task_id integer [not null]
+
+  indexes {
+    
+    message_id [name: 'task_messages_message_id_unique', unique]
+  }
+}
+
+table task_tags {
+  task_id integer [not null]
+  tag_id integer [not null]
+
+  indexes {
+    
+    
+    (task_id, tag_id) [name: 'task_tags_task_id_tag_id_unique', unique]
+  }
+}
+
+table tasks {
+  id serial [pk, not null, increment]
+  title varchar(255) [not null]
+  weeek_id integer [not null]
+  mr_id integer
+  mr_url varchar(255)
+  task_url varchar(255)
+  is_emergency boolean [not null, default: false]
+  message_caption text [not null]
+  created_at timestamp
+  is_completed boolean [not null, default: false]
+  completed_at timestamp
+
+  indexes {
+    weeek_id [name: 'tasks_weeek_id_unique', unique]
+  }
+}
+
+table test_detail {
+  id serial [pk, not null, increment]
+  name varchar(255) [not null]
+  link varchar(255) [not null]
+  is_completed boolean [not null]
+  test_id integer [not null]
+}
+
+table tests {
+  id serial [pk, not null, increment]
+  total integer [not null, default: 0]
+  task_url varchar(255) [default: `NULL`]
+  is_needed boolean [not null, default: false]
+  is_started boolean [not null, default: false]
+  is_completed boolean [not null, default: false]
+  task_id integer [not null]
+}
+
+table user_vacancies {
+  user_id integer [not null]
+  vacancy vacancy [not null]
+
+  indexes {
+    
+    (user_id, vacancy) [name: 'user_vacancies_user_id_vacancy_unique', unique]
+  }
+}
+
+table users {
+  id serial [pk, not null, increment]
+  name varchar(255) [not null]
+  last_name varchar(255) [not null]
+  telegram_id bigint [not null]
+  telegram_username varchar(32) [not null]
+  gitlab_id integer [not null]
+  weeek_id varchar [not null]
+  birthday timestamp [not null]
+  role role [not null]
+
+  indexes {
+    telegram_id [name: 'users_telegram_id_unique', unique]
+    telegram_username [name: 'users_telegram_username_unique', unique]
+    gitlab_id [name: 'users_gitlab_id_unique', unique]
+    weeek_id [name: 'users_weeek_id_unique', unique]
+  }
+}

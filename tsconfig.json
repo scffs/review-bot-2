@@ -1,0 +1,29 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "noEmit": true,
+    "allowImportingTsExtensions": true,
+    "target": "es2022",
+    "allowJs": true,
+    "sourceMap": true,
+    "inlineSources": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "incremental": true,
+    "skipLibCheck": true,
+    "baseUrl": "src",
+    "paths": {
+      "@config": ["config"], // Алиас для папки config
+      "@database": ["database"], // Алиас для database
+      "@utils": ["utils"], // Алиас для utils
+      "@bot": ["bot"], // Алиас для bot
+      "@types": ["types"], // Алиас для types
+      "@di": ["di"] // Алиас для di
+    }
+  },
+  "include": ["./src"],
+  "exclude": ["**/node_modules"]
+}
