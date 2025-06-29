@@ -15,7 +15,7 @@ docker-compose up -d
 ![img.png](docs/img.png)
 
 ```bash
-bun run start
+bun run dev
 ```
 
 ![img.png](docs/run.png)
